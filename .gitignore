@@ -15,3 +15,9 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+
+# DEV-OPS-TOOLS
+# Ignore the .env file that contains sensitive information
+.env
+quick_query.sql
