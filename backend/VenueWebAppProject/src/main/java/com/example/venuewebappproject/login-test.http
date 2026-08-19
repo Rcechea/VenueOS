@@ -1,0 +1,37 @@
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "wrongpassword"
+}
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "wrong-email@example.com",
+  "password": "password123"
+}
+
+###
+
+GET http://localhost:8080/api/me
+
+###
+
+GET http://localhost:8080/api/me
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzg3MTQ4MjkwLCJleHAiOjE3ODcyMzQ2OTB9.eBJuHjv4uv1lwt263BoYyPftrAS3iFKJxB825-2WhqIeJ_o8CZJxptq-TPTURgwKjhvQK27OzklO-8inXsaiwg
+
