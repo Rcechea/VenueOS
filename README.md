@@ -1,4 +1,4 @@
-# VenueWebAppProject
+# VenueOS
 
 A venue management system.
 
