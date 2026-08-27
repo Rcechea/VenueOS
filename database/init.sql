@@ -209,6 +209,7 @@ INSERT INTO staff (
     job_title,
     hourly_rate
 )
+
 VALUES
     (4, 'Bartender', 15.00),
     (5, 'Event Coordinator', 18.00),
