@@ -13,11 +13,18 @@ services:
     build:
       context: ./backend/
       dockerfile: Dockerfile
+
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
+
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/venue_db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+
     depends_on:
       - postgres
 
@@ -25,6 +32,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL}
     ports:
       - "80:80"
     depends_on:
