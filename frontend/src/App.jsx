@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,9 +21,7 @@ function App() {
     setError("");
 
     try {
-
-      const response = await fetch("https://venue-api.wotaro.co.uk/api/auth/login", {
-
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +42,7 @@ function App() {
     }
   }
 
-  if (loggedInEmail){
+  if (loggedInEmail) {
     return (
       <div>
         <h1>Venue Booking App</h1>
@@ -52,7 +52,7 @@ function App() {
     );
   }
 
-  if (mode === "register"){
+  if (mode === "register") {
     return (
       <div>
         <h1>Venue Booking App</h1>
@@ -61,35 +61,35 @@ function App() {
             <label>First Name</label>
             <input
               type="text"
-              value ={regFirstName}
+              value={regFirstName}
               onChange={(e) => setRegFirstName(e.target.value)}
             />
           </div>
           <div>
             <label>Last Name</label>
-          <input
-            type="text"
-            value={regLastName}
-            onChange={(e) => setRegLastName(e.target.value)}
-          />
+            <input
+              type="text"
+              value={regLastName}
+              onChange={(e) => setRegLastName(e.target.value)}
+            />
           </div>
           <div>
             <label>Email</label>
-          <input
-            type="email"
-            value={regEmail}
-            onChange={(e) => setRegEmail(e.target.value)}
-          />
+            <input
+              type="email"
+              value={regEmail}
+              onChange={(e) => setRegEmail(e.target.value)}
+            />
           </div>
           <div>
             <label>Password</label>
-          <input
-            type="password"
-            value={regPassword}
-            onChange={(e) => setRegPassword(e.target.value)}
-          />
+            <input
+              type="password"
+              value={regPassword}
+              onChange={(e) => setRegPassword(e.target.value)}
+            />
           </div>
-          {regError && <p style={{ color: "red"}}>{regError}</p>}
+          {regError && <p style={{ color: "red" }}>{regError}</p>}
           {regSuccess && <p style={{ color: "green" }}>{regSuccess}</p>}
           <button type="submit">Register</button>
         </form>
@@ -108,15 +108,13 @@ function App() {
     setPassword("");
   }
 
-  async function handleRegisterSubmit(e){
+  async function handleRegisterSubmit(e) {
     e.preventDefault();
     setRegError("");
     setRegSuccess("");
 
     try {
-
-      const response = await fetch("https://venue-api.wotaro.co.uk/api/auth/register", {
-
+      const response = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -129,12 +127,12 @@ function App() {
         }),
       });
 
-      if (response.status === 409){
+      if (response.status === 409) {
         setRegError("Email already registered");
         return;
       }
 
-      if (!response.ok){
+      if (!response.ok) {
         setRegError("Something went wrong. Please try again.");
         return;
       }
@@ -149,8 +147,8 @@ function App() {
         setMode("login");
         setRegSuccess("");
       }, 1500);
-    } catch (err){
-      setRegError ("Something went wrong. Is backend running?");
+    } catch (err) {
+      setRegError("Something went wrong. Is backend running?");
     }
   }
 
@@ -178,9 +176,9 @@ function App() {
         <button type="submit">Log In</button>
       </form>
       <p>
-          Don't have an account?{" "}
-          <button onClick={() => setMode("register")}>Register</button>
-        </p>
+        Don't have an account?{" "}
+        <button onClick={() => setMode("register")}>Register</button>
+      </p>
     </div>
   );
 }
