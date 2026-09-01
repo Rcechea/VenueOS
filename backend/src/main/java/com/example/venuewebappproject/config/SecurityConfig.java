@@ -30,7 +30,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("https://venue-os.wotaro.co.uk"));
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
 
@@ -40,10 +41,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth ->auth.requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .cors(cors -> {})
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
