@@ -30,7 +30,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://venue-os.wotaro.co.uk"));
+        In : configuration.setAllowedOrigins(List.of(
+                "http://localhost/",
+                "https://venue-os.wotaro.co.uk/"
+        ));
 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

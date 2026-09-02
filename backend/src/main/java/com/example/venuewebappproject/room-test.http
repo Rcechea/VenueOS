@@ -1,0 +1,17 @@
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+GET http://localhost:8080/api/rooms
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzg4MzgzMjYzLCJleHAiOjE3ODg0Njk2NjN9.8gCf_gGPgPwv1Ac8Bqnc60U-o4FjyWQIWQABPtxLTq4
+
+###
+
+GET http://localhost:8080/api/event-types
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzg4MzgzMjYzLCJleHAiOjE3ODg0Njk2NjN9.8gCf_gGPgPwv1Ac8Bqnc60U-o4FjyWQIWQABPtxLTq4

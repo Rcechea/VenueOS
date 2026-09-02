@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,12 +16,14 @@ function App() {
   const [regError, setRegError] = useState("");
   const [regSuccess, setRegSuccess] = useState("");
 
+  const [rooms, setRooms] = useState([]);
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/login`, {
+      const response = await fetch(`${API_URL}api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,12 +44,36 @@ function App() {
     }
   }
 
+  useEffect(() => {
+  if (!loggedInEmail) return;
+
+  const token = localStorage.getItem("token");
+
+  fetch(`${import.meta.env.VITE_API_URL}api/rooms`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => setRooms(data))
+    .catch((err) => console.error("Failed to load rooms", err));
+}, [loggedInEmail]);
+
   if (loggedInEmail) {
     return (
       <div>
         <h1>Venue Booking App</h1>
         <p>Welcome, {loggedInEmail}!</p>
         <button onClick={handleLogout}>Log Out</button>
+
+        <h2>Rooms</h2>
+        <ul>
+          {rooms.map((room) => (
+            <li key={room.id}>
+              {room.name} — capacity {room.capacity} — {room.description}
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
@@ -114,7 +140,7 @@ function App() {
     setRegSuccess("");
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/register`, {
+      const response = await fetch(`${API_URL}api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
