@@ -6,5 +6,9 @@ Frontend:
   - Style frontend to look nicely
 
 Backend:
-  - Time based bookings not just date
+  - Time based bookings not just date (currently planned to span over a full day)
+
+Both:
+  - check email exists (mayeb confirmation)
+  - password change option
     
