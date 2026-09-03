@@ -7,6 +7,9 @@ function App() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loggedInEmail, setLoggedInEmail] = useState(null);
+  const [role, setRole] = useState(null);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
 
   const [mode, setMode] = useState("login");
   const [regEmail, setRegEmail] = useState("");
@@ -36,9 +39,16 @@ function App() {
         return;
       }
 
-      const token = await response.text();
-      localStorage.setItem("token", token);
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+      localStorage.setItem("firstName", data.firstName)
+      localStorage.setItem("lastName", data.lastName)
+      setRole(data.role);
+      setFirstName(data.firstName);
+      setLastName(data.lastName);
       setLoggedInEmail(email);
+
     } catch (err) {
       setError("Something went wrong. Is the backend running?");
     }
@@ -59,11 +69,11 @@ function App() {
     .catch((err) => console.error("Failed to load rooms", err));
 }, [loggedInEmail]);
 
-  if (loggedInEmail) {
+  if (loggedInEmail && role === "customer") {
     return (
       <div>
         <h1>Venue Booking App</h1>
-        <p>Welcome, {loggedInEmail}!</p>
+        <p>Welcome, {firstName} {lastName}!</p>
         <button onClick={handleLogout}>Log Out</button>
 
         <h2>Rooms</h2>
@@ -77,6 +87,27 @@ function App() {
       </div>
     );
   }
+
+  if (loggedInEmail && role === "admin") {
+    return (
+      <div>
+        <h1>Venue Booking App</h1>
+        <p>Welcome Admin, {firstName} {lastName}!</p>
+        <button onClick={handleLogout}>Log Out</button>
+      </div>
+    );
+  }
+
+  if (loggedInEmail && role === "staff") {
+    return (
+      <div>
+        <h1>Venue Booking App</h1>
+        <p>Welcome Staff, {firstName} {lastName}!</p>
+        <button onClick={handleLogout}>Log Out</button>
+      </div>
+    );
+  }
+
 
   if (mode === "register") {
     return (
@@ -129,7 +160,13 @@ function App() {
 
   function handleLogout() {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("firstName");
+    localStorage.removeItem("lastName");
     setLoggedInEmail(null);
+    setRole(null);
+    setFirstName(null);
+    setLastName(null);
     setEmail("");
     setPassword("");
   }
