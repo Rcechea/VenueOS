@@ -1,0 +1,33 @@
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+POST http://localhost:8080/api/bookings
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzg4NDU2ODE0LCJleHAiOjE3ODg1NDMyMTR9.k4-GaAnHZzFmeI0hM4NYRmn4-oLpiBdRgInWbRtKXyo
+
+{
+  "roomId": 1,
+  "eventTypeId": 1,
+  "eventName": "Test Wedding",
+  "date": "2026-12-25"
+}
+
+###
+
+POST http://localhost:8080/api/bookings
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzg4NDU2ODE0LCJleHAiOjE3ODg1NDMyMTR9.k4-GaAnHZzFmeI0hM4NYRmn4-oLpiBdRgInWbRtKXyo
+
+{
+  "roomId": 1,
+  "eventTypeId": 2,
+  "eventName": "Duplicate Attempt",
+  "date": "2026-12-25"
+}
