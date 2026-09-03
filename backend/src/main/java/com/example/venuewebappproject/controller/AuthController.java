@@ -1,6 +1,7 @@
 package com.example.venuewebappproject.controller;
 
 import com.example.venuewebappproject.DTO.LoginRequest;
+import com.example.venuewebappproject.DTO.LoginResponse;
 import com.example.venuewebappproject.DTO.RegisterRequest;
 import com.example.venuewebappproject.model.User;
 import com.example.venuewebappproject.repository.UserRepository;
@@ -62,7 +63,14 @@ public class AuthController {
 
         String token = jwtService.generateToken(user.getEmail());
 
-        return ResponseEntity.ok(token);
+        LoginResponse response = new LoginResponse(
+                token,
+                user.getRole(),
+                user.getFirstName(),
+                user.getLastName()
+        );
+
+        return ResponseEntity.ok(response);
     }
 
 }
