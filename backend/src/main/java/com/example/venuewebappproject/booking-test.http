@@ -16,7 +16,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwia
   "roomId": 1,
   "eventTypeId": 1,
   "eventName": "Test Wedding",
-  "date": "2026-12-25"
+  "date": "2026-12-26"
 }
 
 ###

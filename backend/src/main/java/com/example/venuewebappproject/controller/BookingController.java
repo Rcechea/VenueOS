@@ -1,6 +1,7 @@
 package com.example.venuewebappproject.controller;
 
 import com.example.venuewebappproject.DTO.BookingRequest;
+import com.example.venuewebappproject.DTO.BookingResponse;
 import com.example.venuewebappproject.model.Booking;
 import com.example.venuewebappproject.model.EventType;
 import com.example.venuewebappproject.model.Room;
@@ -78,6 +79,18 @@ public class BookingController {
 
         Booking saved = bookingRepository.save(booking);
 
-        return ResponseEntity.status(201).body(saved);
+        BookingResponse response = new BookingResponse(
+                saved.getId(),
+                saved.getCustomer().getFirstName(),
+                saved.getCustomer().getLastName(),
+                saved.getRoom().getName(),
+                saved.getEventType().getName(),
+                saved.getEventName(),
+                saved.getStartTime(),
+                saved.getEndTime(),
+                saved.getStatus()
+        );
+
+        return ResponseEntity.status(201).body(response);
     }
 }
