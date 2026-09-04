@@ -11,4 +11,6 @@ Backend:
 Both:
   - check email exists (mayeb confirmation)
   - password change option
+  - checks for date (booking system)
+  - checks for empty fields (booking system)
     
