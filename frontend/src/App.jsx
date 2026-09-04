@@ -21,6 +21,58 @@ function App() {
 
   const [rooms, setRooms] = useState([]);
 
+  const [eventTypes, setEventTypes] = useState([]);
+
+  const [bookingRoomId, setBookingRoomId] = useState("");
+  const [bookingEventTypeId, setBookingEventTypeId] = useState("");
+  const [bookingEventName, setBookingEventName] = useState("");
+  const [bookingDate, setBookingDate] = useState("");
+  const [bookingError, setBookingError] = useState("");
+  const [bookingSuccess, setBookingSuccess] = useState("");
+
+
+  async function handleBookingSubmit(e) {
+    e.preventDefault();
+    setBookingError("");
+    setBookingSuccess("");
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`${API_URL}api/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          roomId: bookingRoomId,
+          eventTypeId: bookingEventTypeId,
+          eventName: bookingEventName,
+          date: bookingDate,
+        }),
+      });
+
+      if (response.status === 409) {
+        setBookingError("This room is already booked on that date");
+        return;
+      }
+
+      if (!response.ok) {
+        setBookingError("Something went wrong. Please try again.");
+        return;
+      }
+
+      setBookingSuccess("Booking created!");
+      setBookingRoomId("");
+      setBookingEventTypeId("");
+      setBookingEventName("");
+      setBookingDate("");
+    } catch (err) {
+      setBookingError("Something went wrong. Is the backend running?");
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
@@ -55,19 +107,24 @@ function App() {
   }
 
   useEffect(() => {
-  if (!loggedInEmail) return;
+    if (!loggedInEmail) return;
 
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  fetch(`${import.meta.env.VITE_API_URL}api/rooms`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => setRooms(data))
-    .catch((err) => console.error("Failed to load rooms", err));
-}, [loggedInEmail]);
+    fetch(`${API_URL}api/rooms`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => response.json())
+      .then((data) => setRooms(data))
+      .catch((err) => console.error("Failed to load rooms", err));
+
+    fetch(`${API_URL}api/event-types`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => response.json())
+      .then((data) => setEventTypes(data))
+      .catch((err) => console.error("Failed to load event types", err));
+  }, [loggedInEmail]);
 
   if (loggedInEmail && role === "customer") {
     return (
@@ -84,6 +141,56 @@ function App() {
             </li>
           ))}
         </ul>
+        <h2>Book a Room</h2>
+        <form onSubmit={handleBookingSubmit}>
+          <div>
+            <label>Room</label>
+            <select 
+              value={bookingRoomId}
+              onChange={(e) => setBookingRoomId(e.target.value)}
+            >
+              <option value="">Select a room</option>
+              {rooms.map((room) => (
+                <option key={room.id} value={room.id}>
+                  {room.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label>Event Type</label>
+            <select
+              value={bookingEventTypeId}
+              onChange={(e) => setBookingEventTypeId(e.target.value)}
+              >
+                <option value="">Select an event type</option>
+                {eventTypes.map((eventType) => (
+                  <option key={eventType.id} value={eventType.id}>
+                    {eventType.name}
+                  </option>
+                ))}
+              </select>
+          </div>
+          <div>
+            <label>Event Name</label>
+            <input
+              type="text"
+              value={bookingEventName}
+              onChange={(e) => setBookingEventName(e.target.value)}
+            />
+          </div>
+          <div>
+            <label>Date</label>
+            <input
+              type="date"
+              value={bookingDate}
+              onChange={(e) => setBookingDate(e.target.value)}
+            />
+          </div>
+          {bookingError && <p style={{ color: "red" }}>{bookingError}</p>}
+          {bookingSuccess && <p style={{ color: "green" }}>{bookingSuccess}</p>}
+          <button type="submit">Book Room</button>
+        </form>
       </div>
     );
   }
