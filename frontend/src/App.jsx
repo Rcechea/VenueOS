@@ -148,6 +148,7 @@ function App() {
             <select 
               value={bookingRoomId}
               onChange={(e) => setBookingRoomId(e.target.value)}
+              required
             >
               <option value="">Select a room</option>
               {rooms.map((room) => (
@@ -162,6 +163,7 @@ function App() {
             <select
               value={bookingEventTypeId}
               onChange={(e) => setBookingEventTypeId(e.target.value)}
+              required
               >
                 <option value="">Select an event type</option>
                 {eventTypes.map((eventType) => (
@@ -177,6 +179,7 @@ function App() {
               type="text"
               value={bookingEventName}
               onChange={(e) => setBookingEventName(e.target.value)}
+              required
             />
           </div>
           <div>
@@ -185,6 +188,8 @@ function App() {
               type="date"
               value={bookingDate}
               onChange={(e) => setBookingDate(e.target.value)}
+              min={new Date().toISOString().split("T")[0]}
+              required
             />
           </div>
           {bookingError && <p style={{ color: "red" }}>{bookingError}</p>}

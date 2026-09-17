@@ -1,11 +1,21 @@
 package com.example.venuewebappproject.DTO;
 
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 
 public class BookingRequest {
+    @NotNull
     private Long roomId;
+
+    @NotNull
     private Long eventTypeId;
+
     private String eventName;
+
+    @NotNull
+    @FutureOrPresent
     private LocalDate date;
 
     public Long getRoomId() {

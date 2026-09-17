@@ -10,6 +10,7 @@ import com.example.venuewebappproject.repository.BookingRepository;
 import com.example.venuewebappproject.repository.EventTypeRepository;
 import com.example.venuewebappproject.repository.RoomRepository;
 import com.example.venuewebappproject.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -37,7 +38,7 @@ public class BookingController {
     private UserRepository userRepository;
 
     @PostMapping("/api/bookings")
-    public ResponseEntity<?> createBooking(@RequestBody BookingRequest request, Authentication authentication){
+    public ResponseEntity<?> createBooking(@Valid @RequestBody BookingRequest request, Authentication authentication) {
 
         Optional<User> customerOptional = userRepository.findByEmail(authentication.getName());
         if (customerOptional.isEmpty()){
