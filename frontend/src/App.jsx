@@ -4,6 +4,7 @@ import CustomerView from "./components/CustomerView";
 import StaffView from "./components/StaffView";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
+import "./App.css"
 
 const API_URL = import.meta.env.VITE_API_URL;
 
