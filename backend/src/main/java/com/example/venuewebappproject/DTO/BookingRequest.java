@@ -46,4 +46,7 @@ public class BookingRequest {
         return date;
     }
 
-    public void setDate(LocalDate
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+}
