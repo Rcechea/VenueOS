@@ -21,3 +21,4 @@ buildNumber.properties
 # Ignore the .env file that contains sensitive information
 .env
 quick_query.sql
+.secrets
