@@ -1,4 +1,10 @@
 import { useState, useEffect } from "react";
+import AdminView from "./components/AdminView";
+import CustomerView from "./components/CustomerView";
+import StaffView from "./components/StaffView";
+import LoginForm from "./components/LoginForm";
+import RegisterForm from "./components/RegisterForm";
+import "./App.css"
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -128,140 +134,52 @@ function App() {
 
   if (loggedInEmail && role === "customer") {
     return (
-      <div>
-        <h1>Venue Booking App</h1>
-        <p>Welcome, {firstName} {lastName}!</p>
-        <button onClick={handleLogout}>Log Out</button>
-
-        <h2>Rooms</h2>
-        <ul>
-          {rooms.map((room) => (
-            <li key={room.id}>
-              {room.name} — capacity {room.capacity} — {room.description}
-            </li>
-          ))}
-        </ul>
-        <h2>Book a Room</h2>
-        <form onSubmit={handleBookingSubmit}>
-          <div>
-            <label>Room</label>
-            <select 
-              value={bookingRoomId}
-              onChange={(e) => setBookingRoomId(e.target.value)}
-            >
-              <option value="">Select a room</option>
-              {rooms.map((room) => (
-                <option key={room.id} value={room.id}>
-                  {room.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label>Event Type</label>
-            <select
-              value={bookingEventTypeId}
-              onChange={(e) => setBookingEventTypeId(e.target.value)}
-              >
-                <option value="">Select an event type</option>
-                {eventTypes.map((eventType) => (
-                  <option key={eventType.id} value={eventType.id}>
-                    {eventType.name}
-                  </option>
-                ))}
-              </select>
-          </div>
-          <div>
-            <label>Event Name</label>
-            <input
-              type="text"
-              value={bookingEventName}
-              onChange={(e) => setBookingEventName(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>Date</label>
-            <input
-              type="date"
-              value={bookingDate}
-              onChange={(e) => setBookingDate(e.target.value)}
-            />
-          </div>
-          {bookingError && <p style={{ color: "red" }}>{bookingError}</p>}
-          {bookingSuccess && <p style={{ color: "green" }}>{bookingSuccess}</p>}
-          <button type="submit">Book Room</button>
-        </form>
-      </div>
+      <CustomerView
+        firstName={firstName}
+        lastName={lastName}
+        onLogout={handleLogout}
+        rooms={rooms}
+        eventTypes={eventTypes}
+        bookingRoomId={bookingRoomId}
+        setBookingRoomId={setBookingRoomId}
+        bookingEventTypeId={bookingEventTypeId}
+        setBookingEventTypeId={setBookingEventTypeId}
+        bookingEventName={bookingEventName}
+        setBookingEventName={setBookingEventName}
+        bookingDate={bookingDate}
+        setBookingDate={setBookingDate}
+        bookingError={bookingError}
+        bookingSuccess={bookingSuccess}
+        onBookingSubmit={handleBookingSubmit}
+      />
     );
   }
 
   if (loggedInEmail && role === "admin") {
-    return (
-      <div>
-        <h1>Venue Booking App</h1>
-        <p>Welcome Admin, {firstName} {lastName}!</p>
-        <button onClick={handleLogout}>Log Out</button>
-      </div>
-    );
+    return <AdminView firstName={firstName} lastName={lastName} onLogout={handleLogout} />;
   }
 
   if (loggedInEmail && role === "staff") {
-    return (
-      <div>
-        <h1>Venue Booking App</h1>
-        <p>Welcome Staff, {firstName} {lastName}!</p>
-        <button onClick={handleLogout}>Log Out</button>
-      </div>
-    );
+    return <StaffView firstName={firstName} lastName={lastName} onLogout={handleLogout} />;
   }
 
 
   if (mode === "register") {
     return (
-      <div>
-        <h1>Venue Booking App</h1>
-        <form onSubmit={handleRegisterSubmit}>
-          <div>
-            <label>First Name</label>
-            <input
-              type="text"
-              value={regFirstName}
-              onChange={(e) => setRegFirstName(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>Last Name</label>
-            <input
-              type="text"
-              value={regLastName}
-              onChange={(e) => setRegLastName(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              value={regEmail}
-              onChange={(e) => setRegEmail(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>Password</label>
-            <input
-              type="password"
-              value={regPassword}
-              onChange={(e) => setRegPassword(e.target.value)}
-            />
-          </div>
-          {regError && <p style={{ color: "red" }}>{regError}</p>}
-          {regSuccess && <p style={{ color: "green" }}>{regSuccess}</p>}
-          <button type="submit">Register</button>
-        </form>
-        <p>
-          Already have an Account?{" "}
-          <button onClick={() => setMode("login")}>Log In</button>
-        </p>
-      </div>
+      <RegisterForm
+        regFirstName={regFirstName}
+        setRegFirstName={setRegFirstName}
+        regLastName={regLastName}
+        setRegLastName={setRegLastName}
+        regEmail={regEmail}
+        setRegEmail={setRegEmail}
+        regPassword={regPassword}
+        setRegPassword={setRegPassword}
+        regError={regError}
+        regSuccess={regSuccess}
+        onSubmit={handleRegisterSubmit}
+        onSwitchToLogin={() => setMode("login")}
+      />
     );
   }
 
@@ -323,33 +241,15 @@ function App() {
   }
 
   return (
-    <div>
-      <h1>Venue Booking App</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit">Log In</button>
-      </form>
-      <p>
-        Don't have an account?{" "}
-        <button onClick={() => setMode("register")}>Register</button>
-      </p>
-    </div>
+    <LoginForm
+      email={email}
+      setEmail={setEmail}
+      password={password}
+      setPassword={setPassword}
+      error={error}
+      onSubmit={handleSubmit}
+      onSwitchToRegister={() => setMode("register")}
+    />
   );
 }
 

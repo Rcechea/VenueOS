@@ -10,6 +10,7 @@ import com.example.venuewebappproject.repository.BookingRepository;
 import com.example.venuewebappproject.repository.EventTypeRepository;
 import com.example.venuewebappproject.repository.RoomRepository;
 import com.example.venuewebappproject.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -37,7 +38,7 @@ public class BookingController {
     private UserRepository userRepository;
 
     @PostMapping("/api/bookings")
-    public ResponseEntity<?> createBooking(@RequestBody BookingRequest request, Authentication authentication){
+    public ResponseEntity<?> createBooking(@Valid @RequestBody BookingRequest request, Authentication authentication) {
 
         Optional<User> customerOptional = userRepository.findByEmail(authentication.getName());
         if (customerOptional.isEmpty()){
@@ -63,34 +64,4 @@ public class BookingController {
         LocalDateTime startTime = request.getDate().atStartOfDay();
         LocalDateTime endTime = request.getDate().atTime(23, 59, 59);
 
-        List<Booking> conflicts = bookingRepository.findOverlappingBooking(room.getId(), startTime, endTime);
-
-        if (!conflicts.isEmpty()) {
-            return ResponseEntity.status(409).body("Room is already booked on this date");
-        }
-
-        Booking booking = new Booking();
-        booking.setCustomer(customer);
-        booking.setRoom(room);
-        booking.setEventType(eventType);
-        booking.setEventName(request.getEventName());
-        booking.setStartTime(startTime);
-        booking.setEndTime(endTime);
-
-        Booking saved = bookingRepository.save(booking);
-
-        BookingResponse response = new BookingResponse(
-                saved.getId(),
-                saved.getCustomer().getFirstName(),
-                saved.getCustomer().getLastName(),
-                saved.getRoom().getName(),
-                saved.getEventType().getName(),
-                saved.getEventName(),
-                saved.getStartTime(),
-                saved.getEndTime(),
-                saved.getStatus()
-        );
-
-        return ResponseEntity.status(201).body(response);
-    }
-}
+        List<Booking> conflicts = bookingRepository.findOverlappingBooking(roo
