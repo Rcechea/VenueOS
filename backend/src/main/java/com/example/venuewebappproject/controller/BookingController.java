@@ -64,4 +64,31 @@ public class BookingController {
         LocalDateTime startTime = request.getDate().atStartOfDay();
         LocalDateTime endTime = request.getDate().atTime(23, 59, 59);
 
-        List<Booking> conflicts = bookingRepository.findOverlappingBooking(roo
+        List<Booking> conflicts = bookingRepository.findOverlappingBooking(room.getId(), startTime, endTime);
+        if (!conflicts.isEmpty()) {
+            return ResponseEntity.status(409).body("Room is already booked for that date");
+        }
+
+        Booking booking = new Booking();
+        booking.setCustomer(customer);
+        booking.setRoom(room);
+        booking.setEventType(eventType);
+        booking.setEventName(request.getEventName());
+        booking.setStartTime(startTime);
+        booking.setEndTime(endTime);
+
+        Booking saved = bookingRepository.save(booking);
+
+        return ResponseEntity.status(201).body(new BookingResponse(
+                saved.getId(),
+                customer.getFirstName(),
+                customer.getLastName(),
+                room.getName(),
+                eventType.getName(),
+                saved.getEventName(),
+                saved.getStartTime(),
+                saved.getEndTime(),
+                saved.getStatus() != null ? saved.getStatus().toString() : null
+        ));
+    }
+}
