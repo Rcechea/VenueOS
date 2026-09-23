@@ -1,0 +1,10 @@
+# .gitleaks.toml
+title = "VenueOS"
+
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+  '''.*-test\.http$'''
+]

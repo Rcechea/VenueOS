@@ -1,0 +1,61 @@
+name: VenueOS Local CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  local-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Gitleaks
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/repo" \
+            zricethezav/gitleaks:latest \
+            detect \
+            --source="/repo" \
+            --config="/repo/.gitleaks.toml"
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          # npm run lint
+          # npm test -- --run
+          npm run build
+          
+
+ #     - name: Backend
+ #       working-directory: backend/VenueWebAppProject
+ #       run: |
+ #         chmod +x mvnw
+ #         ./mvnw test
+
+      - name: Validate Docker Compose
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.prod.yml \
+            config
+
+      - name: Build Containers
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.prod.yml \
+            build
