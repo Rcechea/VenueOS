@@ -1,7 +1,9 @@
+import Logo from "./Logo";
+
 function roomIcon(name) {
   const n = (name || "").toLowerCase();
 
-  if (n.includes("main")) {
+  if (n.includes("pond")) {
     return (
       <svg viewBox="0 0 32 32" className="room-icon" aria-hidden="true">
         <g fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round">
@@ -13,7 +15,7 @@ function roomIcon(name) {
     );
   }
 
-  if (n.includes("small")) {
+  if (n.includes("wing")) {
     return (
       <svg viewBox="0 0 32 32" className="room-icon" aria-hidden="true">
         <path
@@ -60,12 +62,7 @@ function CustomerView({
     <div className="dashboard-shell">
       <header className="dashboard-topbar">
         <div className="topbar-brand">
-          <svg viewBox="0 0 160 180" className="brand-mark" aria-hidden="true">
-            <g fill="none" stroke="var(--accent)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M23 47 L48 33 C44 20 52 11 62 11 C72 11 78 20 74 30 C66 48 12 70 10 120 C9 150 35 170 70 170 C115 170 145 130 146 65" />
-              <path d="M146 65 C140 105 105 135 66 143" />
-            </g>
-          </svg>
+          <Logo width={36} className="brand-mark" />
           <span>VenueOS</span>
         </div>
         <div className="topbar-user">
