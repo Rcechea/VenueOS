@@ -74,7 +74,7 @@ function App() {
       setBookingEventTypeId("");
       setBookingEventName("");
       setBookingDate("");
-    } catch (err) {
+    } catch {
       setBookingError("Something went wrong. Is the backend running?");
     }
   }
@@ -107,7 +107,7 @@ function App() {
       setLastName(data.lastName);
       setLoggedInEmail(email);
 
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Is the backend running?");
     }
   }
@@ -235,7 +235,7 @@ function App() {
         setMode("login");
         setRegSuccess("");
       }, 1500);
-    } catch (err) {
+    } catch {
       setRegError("Something went wrong. Is backend running?");
     }
   }

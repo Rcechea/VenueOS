@@ -178,9 +178,9 @@ VALUES
 
 INSERT INTO rooms (name, description, capacity)
 VALUES
-    ('Main Hall', 'Main venue hall', 200),
-    ('Small Hall', 'Smaller event space', 80),
-    ('Meeting Room', 'Small meeting and conference room', 20);
+    ('The Great Pond', 'Main hall - our largest event space', 200),
+    ('The Swan''s Wing', 'Small hall - a smaller event space', 80),
+    ('The Nest', 'Meeting room - small meeting and conference room', 20);
 
 INSERT INTO inventory (name, description, quantity)
 VALUES
