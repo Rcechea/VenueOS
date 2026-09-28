@@ -1,0 +1,191 @@
+name: VenueOS CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Gitleaks
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/repo" \
+            zricethezav/gitleaks:latest \
+            detect \
+            --source="/repo" \
+            --config="/repo/.gitleaks.toml" \
+            --verbose
+
+      - name: Create CI Environment File
+        run: |
+          cat > .env << EOF
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }}
+          VITE_API_URL=${{ secrets.VITE_API_URL }}
+          EOF
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Make Maven Wrapper Executable
+        run: chmod +x backend/mvnw
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Frontend Lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Frontend Tests
+        working-directory: frontend
+        run: npm test -- --run
+
+      - name: Frontend Build
+        working-directory: frontend
+        run: npm run build
+
+      - name: Backend Tests
+        working-directory: backend/VenueWebAppProject
+        run: ./mvnw test
+
+      - name: Validate Docker Compose
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.prod.yml \
+            config
+
+      - name: Build Containers
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.prod.yml \
+            build
+
+      - name: Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        continue-on-error: true
+        with:
+          scan-type: fs
+          scan-ref: .
+
+      - name: Start Stack
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.prod.yml \
+            up -d --build
+
+      - name: Wait For Healthy Services
+        run: |
+          for i in {1..36}; do
+
+            POSTGRES_CONTAINER=$(docker compose ps -q postgres)
+            BACKEND_CONTAINER=$(docker compose ps -q backend)
+            FRONTEND_CONTAINER=$(docker compose ps -q frontend)
+
+            POSTGRES="starting"
+            BACKEND="starting"
+            FRONTEND="starting"
+
+            if [ -n "$POSTGRES_CONTAINER" ]; then
+              POSTGRES=$(docker inspect \
+                --format='{{.State.Health.Status}}' \
+                "$POSTGRES_CONTAINER")
+            fi
+
+            if [ -n "$BACKEND_CONTAINER" ]; then
+              BACKEND=$(docker inspect \
+                --format='{{.State.Health.Status}}' \
+                "$BACKEND_CONTAINER")
+            fi
+
+            if [ -n "$FRONTEND_CONTAINER" ]; then
+              FRONTEND=$(docker inspect \
+                --format='{{.State.Health.Status}}' \
+                "$FRONTEND_CONTAINER")
+            fi
+
+            echo "Postgres : $POSTGRES"
+            echo "Backend  : $BACKEND"
+            echo "Frontend : $FRONTEND"
+
+            if [ "$POSTGRES" = "healthy" ] &&
+               [ "$BACKEND" = "healthy" ] &&
+               [ "$FRONTEND" = "healthy" ]; then
+              echo "All services healthy"
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "Services did not become healthy"
+          exit 1
+
+      - name: Frontend Smoke Test
+        run: |
+          curl --fail \
+            --retry 10 \
+            --retry-delay 3 \
+            http://127.0.0.1:8080
+
+      - name: Docker Status
+        run: docker compose ps
+
+      - name: Collect Logs
+        if: failure()
+        run: |
+          mkdir -p artifacts
+
+          docker compose ps \
+            > artifacts/docker-compose-ps.txt
+
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.prod.yml \
+            logs \
+            > artifacts/docker-compose.log
+
+      - name: Upload Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: venueos-failure-logs
+          path: artifacts
+
+      - name: Shutdown Stack
+        if: always()
+        run: |
+          docker compose \
+            -f docker-compose.yml \
+            -f docker-compose.prod.yml \
+            down -v
