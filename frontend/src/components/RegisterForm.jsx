@@ -26,32 +26,36 @@ function RegisterForm({
                 <form onSubmit={onSubmit} className="auth-form">
                     <h2>Create an account</h2>
                     <div className="field">
-                        <label>First name</label>
+                        <label htmlFor="register-first-name">First Name</label>
                         <input
+                            id="register-first-name"
                             type="text"
                             value={regFirstName}
                             onChange={(e) => setRegFirstName(e.target.value)}
                         />
                     </div>
                     <div className="field">
-                        <label>Last name</label>
+                        <label htmlFor="register-first-name">Last Name</label>
                         <input
+                            id="register-first-name"
                             type="text"
                             value={regLastName}
                             onChange={(e) => setRegLastName(e.target.value)}
                         />
                     </div>
                     <div className="field">
-                        <label>Email</label>
+                        <label htmlFor="register-email">Email</label>
                         <input
+                            id="register-email"
                             type="email"
                             value={regEmail}
                             onChange={(e) => setRegEmail(e.target.value)}
                         />
                     </div>
                     <div className="field">
-                        <label>Password</label>
+                        <label htmlFor="register-password">Password</label>
                         <input
+                            id="register-password"
                             type="password"
                             value={regPassword}
                             onChange={(e) => setRegPassword(e.target.value)}

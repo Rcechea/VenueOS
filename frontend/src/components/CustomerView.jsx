@@ -90,8 +90,9 @@ function CustomerView({
           <h2 className="section-title">Book a room</h2>
           <form onSubmit={onBookingSubmit} className="booking-form">
             <div className="field">
-              <label>Room</label>
+              <label htmlFor="booking-room">Room</label>
               <select
+                id="booking-room"
                 value={bookingRoomId}
                 onChange={(e) => setBookingRoomId(e.target.value)}
                 required
@@ -103,8 +104,9 @@ function CustomerView({
               </select>
             </div>
             <div className="field">
-              <label>Event type</label>
+              <label htmlFor="booking-event-type">Event Type</label>
               <select
+                id="booking-event-type"
                 value={bookingEventTypeId}
                 onChange={(e) => setBookingEventTypeId(e.target.value)}
                 required
@@ -116,8 +118,9 @@ function CustomerView({
               </select>
             </div>
             <div className="field">
-              <label>Event name</label>
+              <label htmlFor="booking-event-name">Event Name</label>
               <input
+                id="booking-event-name"
                 type="text"
                 value={bookingEventName}
                 onChange={(e) => setBookingEventName(e.target.value)}
@@ -125,8 +128,9 @@ function CustomerView({
               />
             </div>
             <div className="field">
-              <label>Date</label>
+              <label htmlFor="booking-date">Date</label>
               <input
+                id="booking-date"
                 type="date"
                 value={bookingDate}
                 onChange={(e) => setBookingDate(e.target.value)}
